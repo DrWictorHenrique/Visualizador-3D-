@@ -1,35 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Display de Mesa 70 Anos</title>
+<title>70 Anos · Display de Mesa</title>
 <style>
+:root{--tx:#eef2fb;--tx2:rgba(238,242,251,.6);--btn:rgba(255,255,255,.09);--btnb:rgba(255,255,255,.2);
+  --btnh:rgba(255,255,255,.18);--on:#fff;--ontx:#13204a;--rot:rgba(9,16,40,.78);--rottx:#fff;--bg:#0b1430}
+body.claro{--tx:#16203c;--tx2:#5a6479;--btn:rgba(255,255,255,.75);--btnb:rgba(20,30,60,.14);
+  --btnh:#fff;--on:#16203c;--ontx:#fff;--rot:rgba(255,255,255,.94);--rottx:#16203c;--bg:#e4e8f0}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden;background:#b3bac8;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 #app{position:fixed;inset:0}canvas{display:block;touch-action:none}
-#hud{position:fixed;left:0;right:0;bottom:0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;pointer-events:none;z-index:3}
-button{pointer-events:auto;border:1px solid rgba(20,30,60,.2);background:rgba(255,255,255,.82);
-  color:#1d2742;font-size:13px;letter-spacing:.02em;padding:9px 15px;border-radius:999px;cursor:pointer;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .18s,color .18s}
-button:hover{background:#fff}
-button[aria-pressed="true"]{background:#16203f;color:#fff;border-color:#16203f}
-#cap{position:fixed;top:0;left:0;right:0;padding:calc(16px + env(safe-area-inset-top)) 18px 0;
-  text-align:center;pointer-events:none;z-index:3}
-#cap h1{font-size:15px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#16203c}
-#cap p{font-size:12px;margin-top:5px;color:#4b5365;letter-spacing:.04em}
-#carr{position:fixed;inset:0;display:grid;place-items:center;color:#59606f;font-size:13px;
-  letter-spacing:.08em;background:#b3bac8;transition:opacity .45s;z-index:5}
+#cap{position:fixed;top:0;left:0;right:0;padding:calc(18px + env(safe-area-inset-top)) 18px 0;text-align:center;pointer-events:none;z-index:3}
+#cap h1{font-size:15px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+#cap p{font-size:12px;margin-top:6px;color:var(--tx2);letter-spacing:.03em;line-height:1.5}
+#hud{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(14px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:3}
+.lin{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.seg{display:flex;padding:3px;border-radius:999px;background:var(--btn);border:1px solid var(--btnb);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);pointer-events:auto}
+.seg button{border:0;background:transparent}
+button{pointer-events:auto;border:1px solid var(--btnb);background:var(--btn);color:var(--tx);font:inherit;font-size:13px;
+  letter-spacing:.02em;padding:8px 15px;border-radius:999px;cursor:pointer;backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);transition:background .2s,color .2s}
+button:hover{background:var(--btnh)}
+button[aria-pressed="true"]{background:var(--on);color:var(--ontx)}
+#dica{font-size:11.5px;color:var(--tx2);letter-spacing:.04em;transition:opacity .6s}
+#dica.off{opacity:0}
+.rot{position:fixed;left:0;top:0;z-index:2;pointer-events:none;display:flex;align-items:center;gap:7px;
+  opacity:0;white-space:nowrap}
+.rot i{width:8px;height:8px;border-radius:50%;background:var(--rottx);box-shadow:0 0 0 3px var(--rot);flex:none}
+.rot span{font-size:12px;font-weight:500;letter-spacing:.02em;color:var(--rottx);background:var(--rot);
+  padding:5px 10px;border-radius:999px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.rot.esq{flex-direction:row-reverse}
+#carr{position:fixed;inset:0;display:grid;place-items:center;font-size:13px;letter-spacing:.1em;color:var(--tx2);
+  background:var(--bg);transition:opacity .5s;z-index:9}
 #carr.off{opacity:0;pointer-events:none}
+@media (max-width:560px){#cap h1{font-size:13px}#cap p{font-size:11px}button{font-size:12px;padding:7px 12px}}
 </style></head><body>
 <div id="app"></div>
-<div id="cap"><h1>70 Anos &middot; Display de Mesa</h1><p>20 &times; 18 &times; 5 cm &middot; acrílico</p></div>
+<div id="cap"><h1>70 Anos &middot; Display de Mesa</h1>
+<p>20 &times; 18 &times; 5 cm<br>Cristal 5 mm &middot; Espelhado dourado 2 mm &middot; Branco 3 mm &middot; Base cristal 12 mm</p></div>
+<div id="rotulos"></div>
 <div id="hud">
-  <button id="bGira" aria-pressed="true">Girar</button>
-  <button id="bFrente">Frente</button><button id="b34">3/4</button><button id="bLado">Lado</button><button id="bVerso">Verso</button>
-  <button id="bFundo" aria-pressed="false">Fundo escuro</button>
+  <div id="dica">Arraste para girar &middot; pince ou role para aproximar</div>
+  <div class="lin">
+    <div class="seg" role="group" aria-label="Vistas">
+      <button data-v="frente">Frente</button><button data-v="tresq" aria-pressed="true">3/4</button>
+      <button data-v="lado">Lado</button><button data-v="verso">Verso</button>
+    </div>
+  </div>
+  <div class="lin">
+    <button id="bCam" aria-pressed="false">Ver camadas</button>
+    <button id="bGira" aria-pressed="true">Girar</button>
+    <button id="bTema" aria-pressed="false">Fundo claro</button>
+  </div>
 </div>
-<div id="carr">montando a peça…</div>
+<div id="carr">carregando…</div>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js",
 "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
@@ -38,107 +65,160 @@ button[aria-pressed="true"]{background:#16203f;color:#fff;border-color:#16203f}
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 const G = {"painel": [{"outer": [[25.81, -7.99], [24.35, -7.53], [23.26, -6.47], [22.77, -5.1], [22.61, -1.26], [21.89, -0.36], [20.75, 0.0], [22.63, 0.0], [22.54, 2.97], [21.94, 3.96], [10.34, 4.46], [7.51, 5.54], [5.22, 7.44], [3.75, 9.64], [2.92, 12.14], [2.79, 14.83], [3.39, 17.63], [4.93, 20.87], [70.5, 129.61], [72.79, 133.46], [72.98, 134.39], [72.51, 135.43], [71.61, 135.85], [12.37, 135.83], [9.94, 136.13], [7.55, 136.97], [4.71, 138.85], [2.35, 141.57], [0.79, 144.79], [0.05, 148.3], [0.01, 156.59], [0.51, 159.9], [2.21, 163.81], [5.0, 167.0], [8.48, 169.03], [12.37, 169.77], [122.95, 169.55], [125.69, 168.29], [127.91, 166.07], [129.38, 163.07], [129.84, 159.81], [128.84, 155.53], [121.91, 143.22], [121.88, 142.15], [122.44, 141.32], [123.51, 141.05], [133.15, 143.1], [140.32, 143.53], [148.35, 142.91], [156.22, 141.13], [163.94, 138.14], [171.13, 134.03], [177.71, 128.86], [183.48, 122.8], [187.85, 116.82], [191.46, 110.34], [194.26, 103.49], [196.28, 96.23], [197.6, 86.79], [197.55, 77.3], [196.2, 68.07], [193.36, 57.98], [193.75, 57.04], [196.38, 55.06], [198.24, 52.74], [199.36, 50.09], [199.76, 47.18], [198.85, 43.41], [197.77, 41.88], [196.0, 40.42], [195.66, 39.45], [197.81, 33.64], [198.76, 28.9], [198.81, 23.97], [197.89, 19.36], [195.92, 14.94], [192.98, 11.09], [189.4, 8.09], [184.2, 5.19], [183.91, 0.0], [185.75, 0.0], [184.64, -0.34], [183.92, -1.2], [183.67, -5.42], [182.54, -7.25], [180.45, -8.0], [25.81, -7.99]], "holes": [[[105.56, 72.04], [111.16, 74.44], [115.79, 74.9], [120.2, 73.66], [123.69, 70.88], [125.52, 67.59], [126.17, 63.82], [125.5, 60.67], [122.44, 54.0], [122.48, 52.96], [123.15, 52.14], [126.74, 51.07], [130.12, 48.97], [135.13, 50.7], [138.85, 51.04], [141.92, 50.33], [145.48, 47.93], [146.61, 47.87], [158.22, 60.08], [161.47, 64.97], [163.94, 70.32], [165.64, 76.55], [166.21, 82.85], [165.66, 89.03], [163.97, 94.93], [161.19, 100.33], [157.38, 105.11], [152.45, 109.33], [147.13, 112.34], [141.88, 113.89], [136.01, 114.36], [130.09, 113.73], [124.23, 112.0], [118.56, 109.1], [113.62, 105.19], [109.01, 99.8], [105.91, 94.18], [103.8, 87.52], [103.27, 80.76], [103.68, 76.78], [104.58, 72.91], [105.56, 72.04]]]}], "num": [{"outer": [[103.97, 123.99], [123.69, 158.58], [123.99, 159.84], [123.8, 161.22], [122.19, 163.1], [120.85, 163.39], [12.47, 163.37], [9.85, 162.75], [7.63, 161.0], [6.49, 159.16], [5.91, 156.99], [5.98, 148.15], [6.61, 146.18], [7.71, 144.51], [9.31, 143.15], [11.09, 142.41], [83.82, 142.26], [84.43, 141.72], [55.89, 93.57], [9.69, 17.16], [8.6, 13.94], [8.92, 12.65], [9.81, 11.51], [12.27, 10.65], [32.77, 10.65], [34.84, 11.11], [36.58, 12.32], [38.69, 15.27], [76.76, 78.9], [77.44, 78.48], [78.55, 70.52], [80.9, 62.74], [85.27, 53.84], [87.34, 50.79], [87.86, 50.23], [88.16, 50.39], [101.58, 64.03], [99.62, 68.97], [98.3, 73.65], [97.57, 78.31], [97.41, 82.93], [97.83, 87.51], [98.85, 92.04], [100.45, 96.52], [102.57, 100.79], [104.57, 103.98], [107.66, 107.78], [113.05, 112.83], [119.77, 116.93], [127.2, 119.62], [133.46, 120.66], [139.8, 120.62], [145.91, 119.5], [151.17, 117.41], [156.88, 113.78], [161.98, 109.15], [165.98, 104.02], [169.01, 98.27], [171.0, 92.17], [171.97, 85.7], [171.89, 79.14], [170.76, 72.47], [168.66, 66.15], [165.61, 60.17], [161.43, 54.37], [156.78, 49.56], [162.16, 50.55], [165.99, 49.56], [167.86, 48.37], [169.57, 46.63], [170.77, 44.73], [171.62, 42.35], [173.61, 44.34], [179.69, 52.14], [182.15, 54.04], [185.59, 55.69], [189.31, 64.91], [191.32, 74.07], [191.89, 83.7], [190.9, 93.22], [188.35, 102.43], [184.32, 111.06], [179.03, 118.65], [172.38, 125.33], [164.94, 130.52], [156.76, 134.27], [148.01, 136.5], [139.03, 137.12], [130.47, 136.22], [122.06, 133.85], [113.03, 129.43], [104.61, 123.14], [103.98, 123.37], [103.97, 123.99]], "holes": []}], "anos": [{"outer": [[179.49, 39.14], [182.22, 31.09], [182.91, 27.88], [182.86, 23.56], [181.72, 19.96], [180.68, 18.52], [179.42, 17.63], [177.93, 17.34], [176.73, 17.77], [175.88, 19.02], [175.77, 20.78], [176.24, 22.07], [177.7, 23.71], [177.71, 24.59], [176.25, 25.85], [173.73, 26.14], [171.37, 25.39], [169.55, 23.74], [168.51, 21.38], [168.33, 18.54], [168.86, 16.53], [169.91, 14.73], [171.45, 13.16], [173.26, 12.04], [177.77, 10.98], [182.67, 11.73], [186.37, 13.56], [189.49, 16.33], [191.69, 19.75], [192.87, 23.63], [193.06, 26.94], [192.57, 30.45], [188.91, 39.76], [188.29, 43.16], [188.57, 44.5], [189.33, 45.48], [190.74, 46.1], [193.43, 46.31], [193.9, 47.61], [193.39, 49.12], [192.36, 50.37], [189.14, 51.84], [185.73, 51.61], [182.62, 49.98], [174.55, 39.01], [171.64, 35.92], [169.39, 34.24], [168.93, 34.57], [169.07, 38.35], [168.55, 41.47], [167.54, 43.74], [166.09, 45.41], [163.91, 46.59], [161.33, 46.98], [158.62, 46.52], [155.85, 45.27], [152.53, 42.81], [149.34, 39.43], [146.55, 35.33], [142.72, 27.75], [138.35, 22.32], [135.58, 20.24], [135.1, 21.03], [135.76, 23.46], [142.24, 38.0], [142.59, 40.46], [142.0, 42.46], [140.77, 43.78], [139.15, 44.53], [137.3, 44.63], [135.18, 44.1], [130.88, 41.57], [125.19, 36.14], [124.86, 36.67], [126.89, 41.22], [126.67, 43.25], [125.59, 44.49], [123.91, 45.37], [122.02, 45.68], [120.39, 45.33], [119.21, 44.12], [107.51, 18.79], [106.82, 16.56], [106.96, 14.82], [107.99, 13.27], [109.84, 12.09], [111.99, 11.71], [113.5, 12.26], [119.2, 21.5], [123.9, 28.26], [128.18, 33.41], [131.18, 35.85], [131.55, 35.59], [131.44, 34.98], [127.37, 25.3], [126.06, 20.65], [125.97, 16.37], [127.36, 13.35], [128.64, 12.41], [130.23, 12.01], [132.02, 12.17], [133.92, 12.92], [138.34, 16.61], [142.09, 21.21], [143.51, 16.4], [145.95, 13.3], [147.61, 12.28], [149.51, 11.71], [153.43, 12.09], [156.54, 13.68], [159.68, 16.39], [163.67, 21.53], [167.38, 28.49], [169.98, 29.64], [173.5, 32.34], [176.83, 35.64], [179.49, 39.14]], "holes": [[[156.25, 33.48], [158.18, 30.66], [161.1, 28.76], [161.24, 28.33], [159.49, 24.5], [156.82, 20.6], [154.39, 18.37], [152.42, 17.89], [151.35, 18.6], [150.84, 19.85], [151.23, 24.27], [153.9, 31.24], [155.51, 33.84], [156.25, 33.48]], [[162.33, 33.28], [160.38, 34.9], [159.43, 37.49], [159.9, 40.08], [160.73, 41.22], [161.56, 41.65], [162.75, 40.88], [163.44, 38.61], [162.94, 33.56], [162.33, 33.28]]]}, {"outer": [[110.16, 41.74], [120.19, 63.35], [120.17, 64.91], [119.42, 66.47], [118.08, 67.66], [116.33, 68.37], [114.31, 68.54], [112.34, 68.15], [108.11, 65.56], [100.65, 58.75], [84.89, 42.12], [74.76, 41.91], [68.7, 41.05], [62.9, 39.25], [58.7, 36.61], [56.68, 33.84], [56.51, 31.0], [58.28, 28.31], [59.72, 27.44], [61.21, 27.11], [62.61, 27.51], [64.74, 31.02], [68.5, 33.65], [73.99, 35.58], [80.05, 36.43], [77.78, 33.6], [70.24, 25.94], [62.22, 18.9], [55.54, 14.12], [48.24, 10.3], [47.56, 8.68], [48.23, 6.46], [49.25, 5.12], [50.62, 4.14], [53.87, 3.33], [57.08, 4.14], [61.41, 6.73], [67.71, 12.06], [75.41, 20.11], [88.59, 36.44], [90.34, 36.81], [97.86, 36.6], [98.35, 36.21], [94.62, 25.68], [93.03, 19.81], [92.59, 15.15], [93.44, 11.65], [95.21, 9.42], [97.79, 8.13], [101.06, 7.88], [104.05, 8.78], [105.33, 9.91], [105.66, 11.21], [103.9, 12.22], [103.19, 13.08], [102.62, 14.74], [102.48, 16.86], [103.05, 21.16], [104.57, 26.72], [107.63, 35.86], [112.0, 36.08], [112.97, 36.85], [113.49, 38.17], [113.48, 39.95], [112.93, 41.26], [112.07, 41.69], [110.16, 41.74]], "holes": [[[93.19, 42.24], [100.34, 50.65], [105.51, 55.84], [106.03, 55.82], [106.13, 55.38], [100.44, 41.38], [93.36, 41.52], [93.19, 42.24]]]}], "base": [{"outer": [[0.0, 49.94], [199.76, 49.94], [199.76, 0.0], [0.0, 0.0], [0.0, 49.94]], "holes": []}], "rasgo": [{"outer": [[18.98, 28.07], [180.77, 28.07], [180.78, 21.91], [19.03, 21.87], [18.98, 28.07]], "holes": []}], "dims": {"baseL": 199.76, "baseP": 49.94, "baseE": 12.0, "painelE": 5.0, "douradoE": 2.0, "brancoE": 3.0, "painelH": 169.79, "espiga": 8.0, "adesivoE": 0.12}, "adesivo": [{"outer": [[179.73, 39.32], [179.16, 39.53], [176.83, 36.1], [172.73, 32.07], [169.6, 29.75], [167.21, 28.74], [163.84, 22.37], [160.66, 17.91], [157.01, 14.39], [153.34, 12.38], [149.48, 12.02], [146.07, 13.59], [143.81, 16.46], [142.11, 21.51], [137.86, 16.55], [133.84, 13.21], [132.01, 12.48], [130.31, 12.3], [128.81, 12.66], [127.58, 13.56], [126.28, 16.34], [126.32, 20.39], [127.6, 25.06], [131.8, 35.12], [131.77, 35.81], [131.19, 36.15], [128.25, 33.91], [123.89, 28.74], [118.98, 21.71], [113.3, 12.48], [111.9, 12.01], [109.95, 12.37], [108.25, 13.43], [107.24, 14.91], [107.12, 16.6], [107.78, 18.67], [119.44, 43.92], [120.52, 45.06], [122.03, 45.38], [123.81, 45.08], [125.4, 44.26], [126.43, 43.06], [126.5, 40.9], [124.54, 36.64], [125.15, 35.85], [131.13, 41.39], [135.13, 43.76], [137.18, 44.31], [139.01, 44.26], [140.53, 43.59], [141.74, 42.3], [142.29, 40.52], [142.0, 38.23], [135.32, 23.13], [134.8, 20.75], [135.04, 20.13], [135.61, 19.94], [138.5, 22.04], [142.9, 27.48], [144.39, 29.86], [146.81, 35.18], [149.63, 39.31], [152.73, 42.58], [155.93, 44.97], [158.64, 46.22], [161.26, 46.68], [163.82, 46.31], [165.9, 45.17], [167.29, 43.58], [168.22, 41.53], [168.77, 38.33], [168.63, 34.51], [169.46, 33.94], [171.7, 35.57], [174.74, 38.76], [182.82, 49.76], [185.81, 51.32], [189.09, 51.54], [192.17, 50.15], [193.13, 48.98], [193.6, 47.57], [193.26, 46.56], [190.68, 46.4], [189.15, 45.72], [188.3, 44.63], [187.99, 43.17], [188.63, 39.66], [192.28, 30.38], [192.76, 26.93], [192.58, 23.68], [191.42, 19.88], [189.26, 16.53], [186.2, 13.81], [182.58, 12.02], [177.78, 11.28], [173.39, 12.32], [171.59, 13.44], [170.11, 14.97], [169.11, 16.73], [168.62, 18.66], [168.83, 21.42], [169.85, 23.65], [171.59, 25.17], [173.84, 25.84], [176.15, 25.57], [177.44, 24.46], [177.41, 23.81], [175.99, 22.23], [175.45, 20.7], [175.62, 18.85], [176.56, 17.53], [177.91, 17.04], [179.47, 17.33], [180.84, 18.26], [181.99, 19.82], [183.15, 23.52], [183.21, 27.92], [182.48, 31.26], [179.73, 39.32]], "holes": [[[162.28, 32.97], [163.21, 33.41], [163.74, 38.54], [163.0, 41.05], [161.54, 41.95], [160.61, 41.5], [159.71, 40.37], [159.12, 37.54], [160.13, 34.73], [162.28, 32.97]], [[158.25, 31.03], [156.07, 34.16], [155.44, 34.15], [154.3, 32.54], [152.39, 28.78], [151.03, 24.69], [150.54, 19.8], [151.12, 18.41], [152.3, 17.62], [154.36, 18.01], [156.86, 20.19], [159.65, 24.18], [161.53, 28.25], [161.29, 28.99], [158.25, 31.03]]]}, {"outer": [[87.93, 50.59], [84.76, 55.35], [81.14, 62.96], [78.84, 70.59], [77.72, 78.56], [77.32, 79.11], [76.65, 79.17], [38.43, 15.42], [36.37, 12.53], [34.59, 11.33], [32.61, 10.94], [12.29, 10.95], [10.65, 11.32], [9.48, 12.32], [8.92, 14.32], [10.03, 17.16], [57.35, 95.41], [84.73, 141.71], [84.44, 142.34], [83.82, 142.56], [11.02, 142.74], [9.23, 143.56], [7.75, 144.93], [6.7, 146.72], [6.18, 148.83], [6.34, 157.73], [7.33, 160.1], [9.13, 161.97], [10.77, 162.79], [12.48, 163.07], [121.55, 163.02], [122.61, 162.47], [123.42, 161.38], [123.7, 160.0], [123.41, 158.7], [103.71, 124.14], [103.87, 123.03], [104.91, 122.98], [109.98, 127.05], [115.24, 130.37], [124.49, 134.37], [129.63, 135.74], [134.99, 136.58], [140.38, 136.83], [145.74, 136.51], [151.19, 135.58], [156.38, 134.09], [161.41, 132.03], [166.11, 129.47], [170.59, 126.38], [174.79, 122.75], [178.69, 118.59], [182.02, 114.18], [186.98, 105.07], [190.2, 95.11], [191.56, 84.64], [191.0, 73.95], [189.06, 65.14], [185.49, 56.07], [181.85, 54.21], [179.49, 52.35], [171.76, 42.85], [169.81, 46.82], [166.31, 49.73], [162.44, 50.84], [157.55, 50.03], [161.78, 54.32], [166.03, 60.28], [169.0, 66.18], [171.09, 72.55], [172.19, 79.11], [172.28, 85.57], [171.36, 91.94], [169.47, 97.96], [167.29, 102.43], [164.48, 106.65], [161.18, 110.41], [157.19, 113.92], [153.06, 116.72], [148.87, 118.8], [144.62, 120.14], [139.83, 120.92], [134.84, 121.04], [129.72, 120.47], [124.72, 119.22], [119.92, 117.34], [115.42, 114.85], [111.41, 111.9], [108.05, 108.67], [104.42, 104.29], [101.61, 99.66], [99.42, 94.75], [97.96, 89.78], [97.2, 84.73], [97.16, 79.64], [97.82, 74.5], [99.18, 69.33], [101.24, 64.12], [87.93, 50.59]], "holes": []}, {"outer": [[105.37, 11.08], [105.0, 9.97], [103.79, 8.99], [101.97, 8.33], [99.88, 8.13], [96.33, 9.03], [93.93, 11.38], [92.92, 14.8], [93.26, 19.41], [94.76, 25.13], [98.64, 36.33], [98.03, 36.89], [90.26, 37.11], [88.33, 36.59], [75.19, 20.31], [70.05, 14.8], [64.95, 9.95], [60.33, 6.34], [55.93, 4.0], [52.67, 3.72], [50.96, 4.3], [49.41, 5.37], [48.31, 6.95], [47.86, 8.54], [48.04, 9.52], [48.69, 10.29], [56.96, 14.67], [65.49, 21.26], [76.72, 32.07], [80.35, 36.43], [79.69, 36.73], [75.11, 36.13], [68.75, 34.1], [65.07, 31.75], [63.54, 30.0], [62.49, 27.81], [61.22, 27.41], [59.78, 27.74], [58.42, 28.59], [56.76, 31.22], [57.07, 33.99], [59.11, 36.57], [63.24, 39.07], [69.01, 40.81], [74.78, 41.61], [85.09, 41.89], [100.86, 58.54], [108.07, 65.12], [112.14, 67.75], [114.08, 68.22], [115.96, 68.15], [117.67, 67.55], [119.01, 66.5], [119.82, 65.06], [119.93, 63.55], [109.81, 41.65], [110.03, 41.29], [111.96, 41.4], [112.8, 40.94], [113.26, 39.25], [112.97, 37.46], [111.59, 36.26], [107.38, 36.03], [103.43, 23.97], [102.34, 18.8], [102.28, 14.94], [103.28, 12.42], [105.37, 11.08]], "holes": [[[92.88, 42.33], [92.79, 41.65], [93.31, 41.22], [100.65, 41.17], [106.41, 55.27], [106.24, 56.03], [105.32, 56.07], [100.51, 51.26], [92.88, 42.33]]]}]};
-const app=document.getElementById('app');
+const D = G.dims, B = 0.2;
+
 const ren=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
 ren.setPixelRatio(Math.min(devicePixelRatio,2)); ren.setSize(innerWidth,innerHeight);
-ren.toneMapping=THREE.ACESFilmicToneMapping; ren.toneMappingExposure=1.05;
+ren.toneMapping=THREE.ACESFilmicToneMapping; ren.toneMappingExposure=1.0;
 ren.outputColorSpace=THREE.SRGBColorSpace;
 ren.shadowMap.enabled=true; ren.shadowMap.type=THREE.PCFSoftShadowMap;
-app.appendChild(ren.domElement);
+document.getElementById('app').appendChild(ren.domElement);
 const scene=new THREE.Scene();
 
-/* estudio de alto contraste: caixa escura + softboxes muito claras.
-   e o contraste que faz o dourado ler como espelho. */
+/* estudio de reflexo: caixa escura com softboxes. O contraste e o que faz o dourado ler como espelho
+   e o que acende a aresta polida do cristal. */
 function estudio(){
   const e=new THREE.Scene(), cx=new THREE.BoxGeometry(1,1,1); cx.deleteAttribute('uv');
-  const box=(cor,int,pos,esc)=>{const o=new THREE.Mesh(cx,new THREE.MeshBasicMaterial(
-    {color:new THREE.Color(cor).multiplyScalar(int)})); o.position.set(...pos); o.scale.set(...esc); e.add(o);};
-  e.add(new THREE.Mesh(new THREE.BoxGeometry(60,32,60),
-    new THREE.MeshBasicMaterial({color:0x2b3040,side:THREE.BackSide})));
-  box(0xffffff,22,[  0, 15.2,  2],[20,.3,16]);
-  box(0xfff0d6,17,[-18,  6,   6],[.3,13,16]);
-  box(0xd9e9ff,13,[ 18,  7,  -4],[.3,13,16]);
-  box(0xffffff, 9,[  0,  4, -21],[26,13,.3]);
-  box(0xfff0d4, 1.35,[  0,  6,  24],[46,26,.3]);
-  box(0xffffff,16,[-12, 11,  20],[13, 8,.3]);
-  box(0xfff2dc,11,[ 13,  0,  20],[ 9,11,.3]);
-  box(0x11141c, 1,[  0,-14,   0],[40,.3,40]);
+  const box=(cor,k,p,s)=>{const o=new THREE.Mesh(cx,new THREE.MeshBasicMaterial({color:new THREE.Color(cor).multiplyScalar(k)}));
+    o.position.set(...p); o.scale.set(...s); e.add(o);};
+  e.add(new THREE.Mesh(new THREE.BoxGeometry(60,32,60),new THREE.MeshBasicMaterial({color:0x2b3040,side:THREE.BackSide})));
+  box(0xffffff,22,[0,15.2,2],[20,.3,16]);
+  box(0xfff0d6,17,[-18,6,6],[.3,13,16]);
+  box(0xd9e9ff,13,[18,7,-4],[.3,13,16]);
+  box(0xffffff,9,[0,4,-21],[26,13,.3]);
+  box(0xfff0d4,1.35,[0,6,24],[46,26,.3]);
+  box(0xffffff,16,[-12,11,20],[13,8,.3]);
+  box(0xfff2dc,11,[13,0,20],[9,11,.3]);
+  box(0x11141c,1,[0,-14,0],[40,.3,40]);
   return e;
 }
-const pm=new THREE.PMREMGenerator(ren);
-scene.environment=pm.fromScene(estudio(),0.02).texture;
+scene.environment=new THREE.PMREMGenerator(ren).fromScene(estudio(),0.02).texture;
 
-const ESCURO=0x141d38, CLARO=0xb3bac8; let escuro=false;
+/* fundo em gradiente de tela: sem piso com borda, sem horizonte, sem o arco que aparecia */
+function gradiente(c1,c2){const c=document.createElement('canvas');c.width=c.height=1024;const g=c.getContext('2d');
+  const r=g.createRadialGradient(512,620,30,512,560,800);r.addColorStop(0,c1);r.addColorStop(1,c2);
+  g.fillStyle=r;g.fillRect(0,0,1024,1024);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
+function manchaTex(){const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
+  const r=g.createRadialGradient(128,128,8,128,128,128);r.addColorStop(0,'rgba(0,0,0,.85)');r.addColorStop(.55,'rgba(0,0,0,.35)');
+  r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c);}
+const TEMA={escuro:{bg:gradiente('#2d4380','#060c20'),sombra:.45,ao:.6},
+            claro:{bg:gradiente('#f4f6fa','#a9b2c4'),sombra:.24,ao:.38}};
+
+/* materiais: face e aresta separadas. A aresta polida e o que o olho usa para entender acrilico. */
+const face=e=>new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.035,transmission:1,thickness:e,ior:1.49,
+  specularIntensity:.7,clearcoat:.55,clearcoatRoughness:.06,attenuationColor:new THREE.Color(0xcdeee6),
+  attenuationDistance:140,envMapIntensity:.95});
+const aresta=t=>new THREE.MeshPhysicalMaterial({color:0xcdf1e8,metalness:0,roughness:.06,transmission:t,thickness:4,ior:1.49,
+  clearcoat:1,clearcoatRoughness:.04,envMapIntensity:1.8,attenuationColor:new THREE.Color(0x6fc8b3),attenuationDistance:7});
+const M={
+  cristal:[face(5),aresta(.72)],
+  base:[face(14),aresta(.86)],
+  ouro:[new THREE.MeshStandardMaterial({color:0xEBBC45,metalness:1,roughness:.07,envMapIntensity:1.35}),
+        new THREE.MeshStandardMaterial({color:0x8a6420,metalness:.7,roughness:.3,envMapIntensity:1})],
+  branco:[new THREE.MeshStandardMaterial({color:0xfbfbf9,roughness:.42,envMapIntensity:.6}),
+          new THREE.MeshStandardMaterial({color:0xcfd2d8,roughness:.6,envMapIntensity:.5})],
+  vinil:new THREE.MeshStandardMaterial({color:0xf3f3f1,roughness:.85,envMapIntensity:.35})
+};
+
+function forma(c){const s=new THREE.Shape();c.outer.forEach(([x,y],i)=>i?s.lineTo(x,y):s.moveTo(x,y));
+  (c.holes||[]).forEach(h=>{const p=new THREE.Path();h.forEach(([x,y],i)=>i?p.lineTo(x,y):p.moveTo(x,y));s.holes.push(p);});return s;}
+function solido(cs,esp,mats,bisel,sombra){const g=new THREE.Group();
+  cs.forEach(c=>{const geo=new THREE.ExtrudeGeometry(forma(c),{depth:esp,bevelEnabled:bisel,bevelThickness:B,bevelSize:B,bevelSegments:2,curveSegments:12});
+    const m=new THREE.Mesh(geo,mats);m.castShadow=sombra;m.receiveShadow=true;g.add(m);});return g;}
+function caixa(cs){let a=[1e9,1e9,-1e9,-1e9];cs.forEach(c=>c.outer.forEach(([x,y])=>{a[0]=Math.min(a[0],x);a[1]=Math.min(a[1],y);
+  a[2]=Math.max(a[2],x);a[3]=Math.max(a[3],y);}));return a;}
+
+/* empilhamento com folga real entre camadas: era a sobreposicao do adesivo com o bisel do cristal
+   que gerava o chuviscado no verso */
+const zCris=-D.painelE/2, frenteCris=D.painelE/2+B;
+const zVinil=frenteCris+.06, zOuro=zVinil+D.adesivoE+.05+B, zAnos=zOuro+D.douradoE+B+.05+B;
+const painel=solido(G.painel,D.painelE,M.cristal,true,false); painel.position.z=zCris;
+const vinil=solido(G.adesivo,D.adesivoE,[M.vinil,M.vinil],false,true); vinil.position.z=zVinil;
+const ouro=solido(G.num,D.douradoE,M.ouro,true,true); ouro.position.z=zOuro;
+const anos=solido(G.anos,D.brancoE,M.branco,true,true); anos.position.z=zAnos;
+const pilha=new THREE.Group(); pilha.add(painel,vinil,ouro,anos);
+const base=solido(G.base,D.baseE,M.base,true,false);
+base.rotation.x=-Math.PI/2; base.position.set(0,-D.baseE,D.baseP/2);
+const peca=new THREE.Group(); peca.add(pilha,base);
+const alvoY=(D.painelH-D.baseE)/2;
+peca.position.set(-D.baseL/2,-alvoY,0); scene.add(peca);
+
+const pisoY=-alvoY-D.baseE-B-.05;
+const piso=new THREE.Mesh(new THREE.PlaneGeometry(5000,5000),new THREE.ShadowMaterial({opacity:.45}));
+piso.rotation.x=-Math.PI/2; piso.position.y=pisoY; piso.receiveShadow=true; scene.add(piso);
+const ao=new THREE.Mesh(new THREE.PlaneGeometry(D.baseL*1.45,D.baseP*2.7),
+  new THREE.MeshBasicMaterial({map:manchaTex(),transparent:true,depthWrite:false,opacity:.6}));
+ao.rotation.x=-Math.PI/2; ao.position.y=pisoY+.1; scene.add(ao);
+
+const key=new THREE.DirectionalLight(0xffffff,1.55);key.position.set(110,620,300);key.castShadow=true;
+key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-260,right:260,top:300,bottom:-260,near:60,far:1500});
+key.shadow.bias=-.0012;key.shadow.radius=5;scene.add(key);
+const rim=new THREE.DirectionalLight(0xdbe8ff,1.3);rim.position.set(-260,320,-420);scene.add(rim);
+const fill=new THREE.DirectionalLight(0xfff1dc,.5);fill.position.set(-380,160,260);scene.add(fill);
+scene.add(new THREE.HemisphereLight(0xffffff,0x8e97a8,.25));
+
 const cam=new THREE.PerspectiveCamera(31,innerWidth/innerHeight,1,6000);
 const ctl=new OrbitControls(cam,ren.domElement);
-ctl.enableDamping=true; ctl.dampingFactor=.07; ctl.enablePan=false;
-ctl.minDistance=250; ctl.maxDistance=1200; ctl.maxPolarAngle=Math.PI*.52; ctl.autoRotateSpeed=1.5;
+Object.assign(ctl,{enableDamping:true,dampingFactor:.07,enablePan:false,minDistance:250,maxDistance:1200,
+  maxPolarAngle:Math.PI*.53,autoRotate:true,autoRotateSpeed:1.2});
 
-function forma(c){const s=new THREE.Shape();
-  c.outer.forEach(([x,y],i)=> i?s.lineTo(x,y):s.moveTo(x,y));
-  (c.holes||[]).forEach(h=>{const p=new THREE.Path();
-    h.forEach(([x,y],i)=> i?p.lineTo(x,y):p.moveTo(x,y)); s.holes.push(p);});
-  return s;}
-function solido(cs,esp,mat,z){const g=new THREE.Group();
-  cs.forEach(c=>{const geo=new THREE.ExtrudeGeometry(forma(c),
-    {depth:esp,bevelEnabled:true,bevelThickness:.2,bevelSize:.2,bevelSegments:2,curveSegments:14});
-    geo.computeVertexNormals(); const m=new THREE.Mesh(geo,mat);
-    m.castShadow=true; m.receiveShadow=true; g.add(m);});
-  g.position.z=z; return g;}
+let tema='escuro';
+function aplicaTema(){const t=TEMA[tema];scene.background=t.bg;piso.material.opacity=t.sombra;ao.material.opacity=t.ao;
+  document.body.classList.toggle('claro',tema==='claro');}
+aplicaTema();
 
-const vidro=e=>new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.02,
-  transmission:1,thickness:e,ior:1.49,transparent:true,clearcoat:1,clearcoatRoughness:.02,
-  attenuationDistance:700,attenuationColor:new THREE.Color(0xe4f0f6),
-  envMapIntensity:1.25,side:THREE.DoubleSide});
-const cristal=vidro(7), cristalBase=vidro(26);
-const ouro=new THREE.MeshStandardMaterial({color:0xEBBC45,metalness:1,roughness:.07,envMapIntensity:1.35});
-const branco=new THREE.MeshStandardMaterial({color:0xf8f8f6,metalness:0,roughness:.5,envMapIntensity:.55});
-const vinil=new THREE.MeshStandardMaterial({color:0xf4f4f2,metalness:0,roughness:.78,envMapIntensity:.3});
+/* vistas com transicao suave em coordenadas esfericas: a camera contorna a peca em vez de atravessa-la */
+const V={frente:[0,85,555],tresq:[330,200,425],lado:[520,110,150],verso:[-200,130,-510],camadas:[610,215,250]};
+let tw=null,expA=0,exp=0;
+function vai(nome){const [x,y,z]=V[nome];
+  const tB=expA?new THREE.Vector3(0,22,40):new THREE.Vector3(0,0,0);
+  const sA=new THREE.Spherical().setFromVector3(cam.position.clone().sub(ctl.target));
+  const sB=new THREE.Spherical().setFromVector3(new THREE.Vector3(x,y,z));
+  let dT=sB.theta-sA.theta;while(dT>Math.PI)dT-=2*Math.PI;while(dT<-Math.PI)dT+=2*Math.PI;
+  tw={sA,sB,dT,tA:ctl.target.clone(),tB,t0:performance.now(),dur:1050};
+  marcaVista(nome);}
+function marcaVista(n){document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===n));}
+cam.position.set(...V.tresq); ctl.update();
 
-const D=G.dims, peca=new THREE.Group();
-peca.add(solido(G.painel,D.painelE,cristal,-D.painelE/2));
-/* adesivo branco na face frontal do cristal: mascara a fita e deixa o verso branco */
-peca.add(solido(G.adesivo,D.adesivoE,vinil,D.painelE/2-0.01));
-peca.add(solido(G.num,D.douradoE,ouro,D.painelE/2));
-peca.add(solido(G.anos,D.brancoE,branco,D.painelE/2+D.douradoE));
-const base=solido(G.base,D.baseE,cristalBase,0);
-base.rotation.x=-Math.PI/2; base.position.z=D.baseP/2;
-const wb=new THREE.Group(); wb.add(base); wb.position.y=-D.baseE; peca.add(wb);
-peca.children.forEach(o=>o.position.x-=D.baseL/2);
-const alvoY=(D.painelH-D.baseE)/2; peca.position.y=-alvoY;
-scene.add(peca);
+const bG=document.getElementById('bGira'), bC=document.getElementById('bCam'), bT=document.getElementById('bTema');
+function setGira(v){ctl.autoRotate=v;bG.setAttribute('aria-pressed',v);}
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{setGira(false);vai(b.dataset.v);});
+bG.onclick=()=>setGira(!ctl.autoRotate);
+bC.onclick=()=>{expA=expA?0:1;bC.setAttribute('aria-pressed',!!expA);bC.textContent=expA?'Montar peça':'Ver camadas';
+  setGira(false);vai(expA?'camadas':'tresq');if(expA)marcaVista('');};
+bT.onclick=()=>{tema=tema==='escuro'?'claro':'escuro';bT.setAttribute('aria-pressed',tema==='claro');aplicaTema();};
+const dica=document.getElementById('dica');
+ctl.addEventListener('start',()=>{tw=null;setGira(false);dica.classList.add('off');marcaVista('');});
 
-const piso=new THREE.Mesh(new THREE.CircleGeometry(1600,64),
-  new THREE.MeshStandardMaterial({color:0x7f8799,roughness:.9,metalness:.02}));
-piso.rotation.x=-Math.PI/2; piso.position.y=-alvoY-D.baseE-.3; piso.receiveShadow=true; scene.add(piso);
+/* rotulos das camadas, ancorados na geometria e projetados na tela */
+const bA=caixa(G.anos),bN=caixa(G.num),bP=caixa(G.painel);
+const ROT=[
+  {t:'Branco · 3 mm',o:anos,p:[bA[2]-14,bA[3]-10,D.brancoE]},
+  {t:'Espelhado dourado · 2 mm',o:ouro,p:[bN[0]+70,bN[3]-6,D.douradoE]},
+  {t:'Adesivo branco',o:vinil,p:[bN[0]+16,bN[1]+10,D.adesivoE]},
+  {t:'Cristal · 5 mm',o:painel,p:[bP[2]-2,bP[3]*.62,D.painelE]},
+  {t:'Base cristal · 12 mm',o:base,p:[D.baseL-6,3,D.baseE]}];
+const caixaRot=document.getElementById('rotulos');
+ROT.forEach(r=>{const d=document.createElement('div');d.className='rot';d.innerHTML='<i></i><span>'+r.t+'</span>';
+  caixaRot.appendChild(d);r.el=d;r.v=new THREE.Vector3();});
+function rotulos(){const op=Math.max(0,Math.min(1,(exp-.45)/.4));
+  ROT.forEach(r=>{r.v.set(...r.p).applyMatrix4(r.o.matrixWorld).project(cam);
+    const x=(r.v.x*.5+.5)*innerWidth,y=(-r.v.y*.5+.5)*innerHeight,esq=x>innerWidth*.6;
+    r.el.classList.toggle('esq',esq);
+    r.el.style.transform='translate('+(esq?x-r.el.offsetWidth+4:x-4)+'px,'+(y-r.el.offsetHeight/2)+'px)';
+    r.el.style.opacity=r.v.z<1?op:0;});}
 
-const k=new THREE.DirectionalLight(0xffffff,1.55); k.position.set(230,430,480); k.castShadow=true;
-k.shadow.mapSize.set(2048,2048);
-const sc=k.shadow.camera; sc.left=-250;sc.right=250;sc.top=300;sc.bottom=-250;sc.near=60;sc.far=1400;
-k.shadow.bias=-.0012; k.shadow.radius=4; scene.add(k);
-const f=new THREE.DirectionalLight(0xcfe0ff,.45); f.position.set(-360,200,-180); scene.add(f);
-scene.add(new THREE.HemisphereLight(0xffffff,0x8e97a8,.22));
-
-function pintaFundo(){const c=escuro?ESCURO:CLARO;
-  scene.background=new THREE.Color(c); scene.fog=new THREE.Fog(c,760,2100);
-  piso.material.color.setHex(escuro?0x0f1830:0x7f8799);
-  ren.toneMappingExposure=escuro?.95:1.0;}
-pintaFundo();
-
-const V={frente:[0,34,560],tresq:[330,205,425],lado:[520,110,145],verso:[-150,120,-520]};
-const vai=v=>{const[a,b,c]=V[v];cam.position.set(a,b,c);ctl.target.set(0,0,0);ctl.update();};
-vai('tresq'); ctl.autoRotate=true;
-const bg=document.getElementById('bGira');
-bg.onclick=()=>{ctl.autoRotate=!ctl.autoRotate;bg.setAttribute('aria-pressed',ctl.autoRotate);};
-document.getElementById('bFrente').onclick=()=>vai('frente');
-document.getElementById('b34').onclick=()=>vai('tresq');
-document.getElementById('bLado').onclick=()=>vai('lado');
-document.getElementById('bVerso').onclick=()=>vai('verso');
-const bf=document.getElementById('bFundo');
-bf.onclick=()=>{escuro=!escuro;pintaFundo();bf.setAttribute('aria-pressed',escuro);};
-addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
-  ren.setSize(innerWidth,innerHeight);});
-let n=0;(function loop(){requestAnimationFrame(loop);ctl.update();ren.render(scene,cam);
-  if(++n===3){const c=document.getElementById('carr');c.classList.add('off');
-    setTimeout(()=>c.style.display='none',500);document.body.dataset.pronto='1';}})();
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
+const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+let n=0,tAnt=performance.now();
+(function loop(){requestAnimationFrame(loop);
+  const agora=performance.now(),dt=Math.min(.1,(agora-tAnt)/1000);tAnt=agora;
+  exp+=(expA-exp)*(1-Math.exp(-dt*4.5)); if(Math.abs(expA-exp)<1e-3)exp=expA;
+  pilha.position.y=40*exp; vinil.position.z=zVinil+30*exp; ouro.position.z=zOuro+62*exp; anos.position.z=zAnos+94*exp;
+  if(tw){const k=ease(Math.min(1,(performance.now()-tw.t0)/tw.dur));
+    const s=new THREE.Spherical(tw.sA.radius+(tw.sB.radius-tw.sA.radius)*k,tw.sA.phi+(tw.sB.phi-tw.sA.phi)*k,tw.sA.theta+tw.dT*k);
+    ctl.target.lerpVectors(tw.tA,tw.tB,k);cam.position.setFromSpherical(s).add(ctl.target);if(k>=1)tw=null;}
+  ctl.update();ren.render(scene,cam);rotulos();
+  if(++n===3){const c=document.getElementById('carr');c.classList.add('off');setTimeout(()=>c.remove(),600);document.body.dataset.pronto='1';}
+})();
 </script></body></html>
